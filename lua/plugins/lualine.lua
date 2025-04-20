@@ -23,16 +23,29 @@ return {
 
 			local function harpoon_component()
 				local total_marks = harpoon:list():length()
-
 				if total_marks == 0 then
 					return ""
 				end
+				local cwd = vim.fn.getcwd()
+				local current_file = vim.fn.expand('%:p')
+
+				-- Find the index of the current file in the marks list
+				local index = nil
+				-- Check if the current file is within the CWD
+				if current_file:sub(1, #cwd) == cwd then
+					local current_file = current_file:sub(#cwd + 2) -- +2 to remove the leading slash
+					for i, mark in ipairs(harpoon:list().items) do
+						if mark.value == current_file then
+							index = i
+							break
+						end
+					end
+				end
+
 
 				local current_mark = "—"
-
-				local mark_idx = harpoon:list()._index
-				if mark_idx ~= nil then
-					current_mark = tostring(mark_idx)
+				if index ~= nil then
+					current_mark = tostring(index)
 				end
 
 				return string.format("󱡅 %s/%d", current_mark, total_marks)
