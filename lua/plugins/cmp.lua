@@ -40,18 +40,20 @@ return { -- Autocompletion
 					behavior = cmp.ConfirmBehavior.Insert,
 					select = true,
 				},
-
-				-- <c-k> will move you to the right of each of the expansion locations.
-				-- <c-h> is similar, except moving you backwards.
-				vim.keymap.set({ "i", "s" }, "<c-k>", function()
-					return vim.snippet.jumpable(1)
+				-- Now safe to use luasnip functions
+				vim.keymap.set({ "i", "s" }, "<Tab>", function()
+					if vim.snippet.jumpable(1) then
+						vim.snippet.jump(1)
+					else
+						vim.schedule(function()
+							vim.api.nvim_feedkeys(
+								vim.api.nvim_replace_termcodes("<Tab>", true, false, true),
+								"n",
+								false)
+						end)
+					end
 				end, { silent = true }),
 
-				vim.keymap.set({ "i", "s" }, "<c-j>", function()
-					return vim.snippet.jumpable(-1)
-				end, { silent = true })
-				-- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-				--    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
 			},
 			sources = {
 				{ name = 'nvim_lsp' },
