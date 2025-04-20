@@ -24,6 +24,7 @@ require('lazy').setup({
 	{ import = 'plugins.dadbod' },
 	{ import = 'plugins.catpuccin' },
 	{ import = 'plugins.goimport' },
+	{ import = 'plugins.lualine' },
 }, {
 	ui = {
 		icons = vim.g.have_nerd_font and {} or {
