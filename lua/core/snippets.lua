@@ -1,14 +1,11 @@
 local ok, ls = pcall(require, "luasnip")
 if not ok then
-  vim.notify("LuaSnip not found! Run :Lazy sync", vim.log.levels.ERROR)
-  return
+	vim.notify("LuaSnip not found! Run :Lazy sync", vim.log.levels.ERROR)
+	return
 end
 local s = ls.snippet
-local sn = ls.snippet_node
 local t = ls.text_node
 local i = ls.insert_node
-local f = ls.function_node
-local d = ls.dynamic_node
 local fmt = require("luasnip.extras.fmt").fmt
 
 -- Helper to return Go imports
@@ -31,6 +28,13 @@ local go_snippets = {
       {}
   }}
   ]], { i(1, "t *Type"), i(2, "MethodName"), i(3, "args"), i(4, "returnType"), i(5) })),
+
+	-- Func receiver
+	s("nf", fmt([[
+  func {}({}) {} {{
+      {}
+  }}
+  ]], { i(1, "FuncName"), i(2, "args"), i(3, "returnType"), i(4) })),
 
 	-- Error handling
 	s("err", fmt([[

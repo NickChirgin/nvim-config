@@ -9,7 +9,6 @@ return {
 				proto = { 'buf' },
 				yaml = { 'yamlfix' },
 				go = { 'goimports' },
-				sql = { 'sql_formatter' },
 			},
 			format_on_save = {
 				-- I recommend these options. See :help conform.format for details.

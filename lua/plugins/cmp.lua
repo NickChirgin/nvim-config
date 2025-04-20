@@ -13,6 +13,7 @@ return { -- Autocompletion
 		-- See `:help cmp`
 		local cmp = require 'cmp'
 		local lspkind = require 'lspkind'
+		local ls = require 'luasnip'
 		lspkind.init {}
 
 		cmp.setup {
@@ -40,20 +41,6 @@ return { -- Autocompletion
 					behavior = cmp.ConfirmBehavior.Insert,
 					select = true,
 				},
-				-- Now safe to use luasnip functions
-				vim.keymap.set({ "i", "s" }, "<Tab>", function()
-					if vim.snippet.jumpable(1) then
-						vim.snippet.jump(1)
-					else
-						vim.schedule(function()
-							vim.api.nvim_feedkeys(
-								vim.api.nvim_replace_termcodes("<Tab>", true, false, true),
-								"n",
-								false)
-						end)
-					end
-				end, { silent = true }),
-
 			},
 			sources = {
 				{ name = 'nvim_lsp' },
