@@ -7,7 +7,15 @@ return {
 	},
 
 	config = function()
-		require("dap-go").setup()
+		require("dap-go").setup({
+			-- Additional delve configurations
+			delve = {
+				-- Set the port for delve to use
+				port = "38697",
+				-- Additional build flags
+				build_flags = "-tags=integration -v",
+			},
+		})
 		require("dapui").setup()
 
 		local dap, dapui = require("dap"), require("dapui")
@@ -38,6 +46,22 @@ return {
 					return vim.fn.input('Enter args (space-separated): ', '', 'file')
 				end,
 			},
+			{
+				type = "go",
+				name = "Debug with Env Vars",
+				request = "launch",
+				mode = "test",
+				program = "${file}",
+				env = {
+					VALULT_ADDR = "",
+					BOZON_BRIN_NG_LOCAL_CONFIG_ENABLED = true,
+					BOZON_BRIN_NG_LOCAL_CONFIG_PATH =
+					"/Users/nchirgin/Documents/ozon/brin/brin-ng/.o3/k8s",
+					BOZON_BRIN_NG_LOCAL_CONFIG_NAME = "values_test.yaml",
+					BOZON_BRIN_NG_BIND_LOCALHOST = true,
+				},
+				buildFlags = "-tags=integration",
+			}
 		}
 	end,
 }
