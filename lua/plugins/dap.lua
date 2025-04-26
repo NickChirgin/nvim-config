@@ -39,29 +39,53 @@ return {
 		dap.configurations.go = {
 			{
 				type = "go",
-				name = "Launch with dynamic args",
+				name = "Launch",
 				request = "launch",
-				program = "${file}",
-				args = function()
-					return vim.fn.input('Enter args (space-separated): ', '', 'file')
-				end,
+				program = "${fileDirname}",
+				env = {
+					VALULT_ADDR = "",
+					BOZON_BRIN_NG_LOCAL_CONFIG_ENABLED = "true",
+					BOZON_BRIN_NG_LOCAL_CONFIG_PATH =
+					"/Users/nchirgin/Documents/ozon/brin/brin-ng/.o3/k8s",
+					BOZON_BRIN_NG_LOCAL_CONFIG_NAME = "values_test.yaml",
+					BOZON_BRIN_NG_BIND_LOCALHOST = "true",
+				},
 			},
 			{
 				type = "go",
 				name = "Debug with Env Vars",
 				request = "launch",
 				mode = "test",
-				program = "${file}",
+				program = "${fileDirname}",
 				env = {
 					VALULT_ADDR = "",
-					BOZON_BRIN_NG_LOCAL_CONFIG_ENABLED = true,
+					BOZON_BRIN_NG_LOCAL_CONFIG_ENABLED = "true",
 					BOZON_BRIN_NG_LOCAL_CONFIG_PATH =
 					"/Users/nchirgin/Documents/ozon/brin/brin-ng/.o3/k8s",
 					BOZON_BRIN_NG_LOCAL_CONFIG_NAME = "values_test.yaml",
-					BOZON_BRIN_NG_BIND_LOCALHOST = true,
+					BOZON_BRIN_NG_BIND_LOCALHOST = "true",
 				},
 				buildFlags = "-tags=integration",
+				buildPackage = ".",
 			}
 		}
+		-- Add this to your existing config function
+		vim.keymap.set('n', '<leader>dm', function()
+			-- Run debug_test with custom configuration
+			require('dap-go').debug_test({
+				env = {
+					VAULT_ADDR = "",
+					BOZON_BRIN_NG_LOCAL_CONFIG_ENABLED = "true",
+					BOZON_BRIN_NG_LOCAL_CONFIG_PATH =
+					"/Users/nchirgin/Documents/ozon/brin/brin-ng/.o3/k8s",
+					BOZON_BRIN_NG_LOCAL_CONFIG_NAME = "values_test.yaml",
+					BOZON_BRIN_NG_BIND_LOCALHOST = "true",
+				},
+				buildFlags = "-tags=integration",
+				callback = function()
+					require('dapui').open() -- Ensure UI opens
+				end
+			})
+		end, { desc = "Debug current test method" })
 	end,
 }
