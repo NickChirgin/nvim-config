@@ -21,9 +21,10 @@ return {
 						'--column',
 						'--smart-case',
 						'--hidden',
-						'--glob=!*.pb.go', '!.git/',
 						'--glob=!*.md',
-						'--glob=!*.git*',
+						'--glob=!**/.git/**',
+						'--glob=!*.swagger.json',
+						'--glob=!*pb.*go',
 					},
 					file_ignore_patterns = {
 						'%.git[\\/]',
