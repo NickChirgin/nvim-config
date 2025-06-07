@@ -11,7 +11,9 @@ require('lazy').setup({
 
 	-- Other plugins will be loaded from their respective files
 	{ import = 'plugins.telescope' },
-	{ import = 'plugins.lsp' },
+	-- { import = 'plugins.lsp' },
+	{ import = 'plugins.blink-cmp' },
+	-- { import = 'plugins.vim-lsp' },
 	{ import = 'plugins.treesitter' },
 	{ import = 'plugins.harpoon' },
 	{ import = 'plugins.fugitive' },
@@ -20,7 +22,7 @@ require('lazy').setup({
 	{ import = 'plugins.oil' },
 	{ import = 'plugins.toggleterm' },
 	{ import = 'plugins.undotree' },
-	{ import = 'plugins.cmp' },
+	-- { import = 'plugins.cmp' },
 	{ import = 'plugins.dadbod' },
 	{ import = 'plugins.catpuccin' },
 	{ import = 'plugins.goimport' },
