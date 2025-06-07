@@ -1,6 +1,9 @@
 return {
 	'saghen/blink.cmp',
-	dependencies = { 'rafamadriz/friendly-snippets' },
+	dependencies = {
+		'rafamadriz/friendly-snippets',
+		{ "L3MON4D3/LuaSnip", build = "make install_jsregexp" },
+	},
 
 	version = '1.*',
 	lazy = false,
@@ -38,9 +41,12 @@ return {
 		-- Default list of enabled providers defined so that you can extend it
 		-- elsewhere in your config, without redefining it, due to `opts_extend`
 		sources = {
-			default = { "lsp", "path", "buffer" },
+			default = { "lsp", "snippets", "path", "buffer" },
 		},
 
+		snippets = {
+			preset = "luasnip",
+		},
 		-- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
 		-- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
 		-- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
@@ -49,7 +55,7 @@ return {
 		fuzzy = { implementation = "prefer_rust_with_warning" },
 	},
 	config = function(_, opts)
-	       local capabilities = vim.lsp.protocol.make_client_capabilities()
+		local capabilities = vim.lsp.protocol.make_client_capabilities()
 		local blink = require('blink.cmp')
 		capabilities = blink.get_lsp_capabilities(capabilities)
 		blink.setup(opts)

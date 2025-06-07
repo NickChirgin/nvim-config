@@ -6,14 +6,14 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
--- Core plugins
+	-- Core plugins
 	'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
 	-- Other plugins will be loaded from their respective files
 	{ import = 'plugins.telescope' },
 	-- { import = 'plugins.lsp' },
 	{ import = 'plugins.blink-cmp' },
-	{ import = 'plugins.vim-lsp' },
+	-- { import = 'plugins.vim-lsp' },
 	{ import = 'plugins.treesitter' },
 	{ import = 'plugins.harpoon' },
 	{ import = 'plugins.fugitive' },
