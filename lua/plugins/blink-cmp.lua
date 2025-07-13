@@ -1,11 +1,10 @@
 return {
+	{ "L3MON4D3/LuaSnip", keys = {} },
 	'saghen/blink.cmp',
 	dependencies = {
 		'rafamadriz/friendly-snippets',
-		{ "L3MON4D3/LuaSnip", build = "make install_jsregexp" },
 	},
-
-	version = '1.*',
+	version = '*',
 	lazy = false,
 	opts_extend = { "sources.default" },
 	---@module 'blink.cmp'

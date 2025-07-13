@@ -4,6 +4,8 @@ return {
 		"rcarriga/nvim-dap-ui",
 		"leoluz/nvim-dap-go",
 		"nvim-neotest/nvim-nio",
+		-- Shows variable values inline as virtual text
+		'theHamsta/nvim-dap-virtual-text',
 	},
 
 	config = function()
