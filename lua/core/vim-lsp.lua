@@ -1,7 +1,28 @@
--- Mason PATH is handled by core.mason-path
-vim.lsp.enable({
-	"lua",
-	"gopls",
+-- Add this near the top (after vim.lsp.enable)
+local on_attach = function(client, bufnr)
+	-- Buffer-local keybindings (only work when LSP is active)
+	local opts = { noremap = true, silent = true, buffer = bufnr }
+
+	-- Go to definition (gd)
+	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+
+	-- Go to references (gr)
+	vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+
+	-- Go to implementation (gI)
+	vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, opts)
+
+	-- Optional: Add more LSP keymaps as needed
+	vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)    -- Hover docs
+	vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts) -- Rename symbol
+	vim.keymap.set('n', 'gra', vim.lsp.buf.code_action, opts) -- Code actions
+end
+
+-- This will automatically call on_attach when LSP connects
+vim.api.nvim_create_autocmd('LspAttach', {
+	callback = function(args)
+		on_attach(args.data.client, args.buf)
+	end
 })
 
 -- LSP servers are automatically managed by Mason
@@ -356,3 +377,9 @@ vim.opt.statusline = table.concat({
 	" %l:%c",               -- Line:Column
 	" %p%%"                 -- Percentage through file
 }, " ")
+
+-- Mason PATH is handled by core.mason-path
+vim.lsp.enable({
+	"lua",
+	"gopls",
+})
