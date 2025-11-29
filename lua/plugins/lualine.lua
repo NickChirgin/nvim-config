@@ -28,7 +28,6 @@ return {
 				end
 				local cwd = vim.fn.getcwd()
 				local current_file = vim.fn.expand('%:p')
-
 				-- Find the index of the current file in the marks list
 				local index = nil
 				-- Check if the current file is within the CWD
@@ -52,7 +51,7 @@ return {
 			end
 			require("lualine").setup({
 				options = {
-					theme = "rose-pine",
+					theme = "catppuccin",
 					globalstatus = true,
 					component_separators = { left = "█", right = "█" },
 					section_separators = { left = "█", right = "█" },

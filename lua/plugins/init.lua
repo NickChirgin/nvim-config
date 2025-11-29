@@ -11,7 +11,6 @@ require('lazy').setup({
 
 	-- Other plugins will be loaded from their respective files
 	{ import = 'plugins.telescope' },
-	-- { import = 'plugins.blink-cmp' },
 	{ import = 'plugins.test' },
 	{ import = 'plugins.treesitter' },
 	{ import = 'plugins.harpoon' },
@@ -22,11 +21,10 @@ require('lazy').setup({
 	{ import = 'plugins.toggleterm' },
 	{ import = 'plugins.undotree' },
 	{ import = 'plugins.dadbod' },
-	-- { import = 'plugins.catpuccin' },
+	{ import = 'plugins.catpuccin' },
 	{ import = 'plugins.goimport' },
 	{ import = 'plugins.lualine' },
 	{ import = 'plugins.luasnip' },
-	{ import = 'plugins.rosepine' },
 	{ import = 'plugins.diffview' },
 }, {
 	ui = {

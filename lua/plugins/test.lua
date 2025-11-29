@@ -6,7 +6,7 @@ return {
 			"rafamadriz/friendly-snippets",
 		},
 		-- event = "InsertEnter",
-		version = "*",
+		version = "1.*",
 		config = function()
 			-- vim.cmd('highlight Pmenu guibg=none')
 			-- vim.cmd('highlight PmenuExtra guibg=none')

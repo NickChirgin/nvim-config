@@ -26,3 +26,5 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
+vim.opt.termguicolors = true
+vim.g.t_Co = '256' -- Fallback for older terms

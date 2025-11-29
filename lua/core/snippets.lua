@@ -4,14 +4,8 @@ if not ok then
 	return
 end
 local s = ls.snippet
-local t = ls.text_node
 local i = ls.insert_node
 local fmt = require("luasnip.extras.fmt").fmt
-
--- Helper to return Go imports
-local go_imports = function()
-	return t({ 'import "', i(1, 'package'), '"' })
-end
 
 -- Snippet Definitions
 local go_snippets = {
