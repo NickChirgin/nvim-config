@@ -14,6 +14,8 @@ return {
 				)
 			end,
 		})
-		vim.keymap.set('n', '<C-z>', '<Cmd>ToggleTerm direction=float<CR>')
+		vim.keymap.set('n', '<C-z>', function()
+			require('toggleterm').toggle(0, 0, nil, 'float')
+		end, { noremap = true, silent = true })
 	end,
 }

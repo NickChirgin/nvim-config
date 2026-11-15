@@ -1,6 +1,5 @@
--- Add this near the top (after vim.lsp.enable)
+-- Buffer-local LSP keybindings (only work when LSP is active)
 local on_attach = function(client, bufnr)
-	-- Buffer-local keybindings (only work when LSP is active)
 	local opts = { noremap = true, silent = true, buffer = bufnr }
 
 	-- Go to definition (gd)
@@ -12,10 +11,12 @@ local on_attach = function(client, bufnr)
 	-- Go to implementation (gI)
 	vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, opts)
 
-	-- Optional: Add more LSP keymaps as needed
-	vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)    -- Hover docs
-	vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts) -- Rename symbol
-	vim.keymap.set('n', 'gra', vim.lsp.buf.code_action, opts) -- Code actions
+	-- Hover docs
+	vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+	-- Rename symbol
+	vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+	-- Code actions
+	vim.keymap.set('n', 'gra', vim.lsp.buf.code_action, opts)
 end
 
 -- This will automatically call on_attach when LSP connects
@@ -24,9 +25,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		on_attach(args.data.client, args.buf)
 	end
 })
-
--- LSP servers are automatically managed by Mason
--- Use :MasonVerify to check which tools are Mason-managed
 
 vim.diagnostic.config({
 	virtual_text = true,
@@ -58,13 +56,25 @@ local function restart_lsp(bufnr)
 	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	local clients = vim.lsp.get_clients({ bufnr = bufnr })
 
-	for _, client in ipairs(clients) do
-		vim.lsp.stop_client(client.id)
+	if #clients == 0 then
+		vim.cmd('edit')
+		return
 	end
 
-	vim.defer_fn(function()
-		vim.cmd('edit')
-	end, 100)
+	for _, client in ipairs(clients) do
+		client:stop(true)
+	end
+
+	vim.wait(5000, function()
+		for _, client in ipairs(clients) do
+			if not client:is_stopped() then
+				return false
+			end
+		end
+		return true
+	end, 50)
+
+	vim.cmd('edit')
 end
 
 vim.api.nvim_create_user_command('LspRestart', function()
@@ -182,7 +192,7 @@ local function lsp_info()
 	print("")
 
 	-- Basic info
-	print("󰈙 Language client log: " .. vim.lsp.get_log_path())
+	print("󰈙 Language client log: " .. vim.lsp.log.get_filename())
 	print("󰈔 Detected filetype: " .. vim.bo.filetype)
 	print("󰈮 Buffer: " .. bufnr)
 	print("󰈔 Root directory: " .. (vim.fn.getcwd() or "N/A"))
@@ -210,7 +220,7 @@ local function lsp_info()
 		print("  Filetypes: " .. table.concat(client.config.filetypes or {}, ", "))
 
 		-- Server status
-		if client.is_stopped() then
+		if client:is_stopped() then
 			print("  Status: 󰅚 Stopped")
 		else
 			print("  Status: 󰄬 Running")
@@ -276,109 +286,24 @@ end
 vim.api.nvim_create_user_command('LspInfo', lsp_info, { desc = "Show comprehensive LSP information" })
 
 
-local function lsp_status_short()
-	local bufnr = vim.api.nvim_get_current_buf()
-	local clients = vim.lsp.get_clients({ bufnr = bufnr })
+-- Centralize default LSP capabilities (blink.cmp + fileOperations)
+local blink = require('blink.cmp')
+vim.lsp.config('*', {
+	capabilities = vim.tbl_deep_extend(
+		"force",
+		vim.lsp.protocol.make_client_capabilities(),
+		blink.get_lsp_capabilities(),
+		{
+			workspace = {
+				fileOperations = {
+					didRename = true,
+					willRename = true,
+				},
+			},
+		}
+	),
+})
 
-	if #clients == 0 then
-		return "" -- Return empty string when no LSP
-	end
-
-	local names = {}
-	for _, client in ipairs(clients) do
-		table.insert(names, client.name)
-	end
-
-	return "󰒋 " .. table.concat(names, ",")
-end
-
-local function git_branch()
-	local ok, handle = pcall(io.popen, "git branch --show-current 2>/dev/null")
-	if not ok or not handle then
-		return ""
-	end
-	local branch = handle:read("*a")
-	handle:close()
-	if branch and branch ~= "" then
-		branch = branch:gsub("\n", "")
-		return " 󰊢 " .. branch
-	end
-	return ""
-end
-
-local function formatter_status()
-	local ok, conform = pcall(require, "conform")
-	if not ok then
-		return ""
-	end
-
-	local formatters = conform.list_formatters_to_run(0)
-	if #formatters == 0 then
-		return ""
-	end
-
-	local formatter_names = {}
-	for _, formatter in ipairs(formatters) do
-		table.insert(formatter_names, formatter.name)
-	end
-
-	return "󰉿 " .. table.concat(formatter_names, ",")
-end
-
-local function linter_status()
-	local ok, lint = pcall(require, "lint")
-	if not ok then
-		return ""
-	end
-
-	local linters = lint.linters_by_ft[vim.bo.filetype] or {}
-	if #linters == 0 then
-		return ""
-	end
-
-	return "󰁨 " .. table.concat(linters, ",")
-end
--- Safe wrapper functions for statusline
-local function safe_git_branch()
-	local ok, result = pcall(git_branch)
-	return ok and result or ""
-end
-
-local function safe_lsp_status()
-	local ok, result = pcall(lsp_status_short)
-	return ok and result or ""
-end
-
-local function safe_formatter_status()
-	local ok, result = pcall(formatter_status)
-	return ok and result or ""
-end
-
-local function safe_linter_status()
-	local ok, result = pcall(linter_status)
-	return ok and result or ""
-end
-
-_G.git_branch = safe_git_branch
-_G.lsp_status = safe_lsp_status
-_G.formatter_status = safe_formatter_status
-_G.linter_status = safe_linter_status
-
--- THEN set the statusline
-vim.opt.statusline = table.concat({
-	"%{v:lua.git_branch()}", -- Git branch
-	"%f",                   -- File name
-	"%m",                   -- Modified flag
-	"%r",                   -- Readonly flag
-	"%=",                   -- Right align
-	"%{v:lua.linter_status()}", -- Linter status
-	"%{v:lua.formatter_status()}", -- Formatter status
-	"%{v:lua.lsp_status()}", -- LSP status
-	" %l:%c",               -- Line:Column
-	" %p%%"                 -- Percentage through file
-}, " ")
-
--- Mason PATH is handled by core.mason-path
 vim.lsp.enable({
 	"lua",
 	"gopls",

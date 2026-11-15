@@ -1,7 +1,6 @@
-local blink = require("blink.cmp")
 return {
 	cmd = { 'gopls' },
-	filetypes = { 'go', 'gomod', 'gowork', 'gotmpl', 'gosum' },
+	filetypes = { 'go', 'gomod', 'gowork' },
 	root_markers = { 'go.mod', 'go.work', '.git' },
 	settings = {
 		gopls = {
@@ -17,10 +16,7 @@ return {
 				nilness = true,
 				unusedparams = true,
 				unusedwrite = true,
-				useany = true,
 				unreachable = true,
-				modernize = true,
-				stylecheck = true,
 				appends = true,
 				asmdecl = true,
 				assign = true,
@@ -28,9 +24,6 @@ return {
 				bools = true,
 				buildtag = true,
 				cgocall = true,
-				composite = true,
-				contextcheck = true,
-				deba = true,
 				atomicalign = true,
 				composites = true,
 				copylocks = true,
@@ -42,7 +35,6 @@ return {
 				errorsas = true,
 				fillreturns = true,
 				framepointer = true,
-				gofix = true,
 				hostport = true,
 				infertypeargs = true,
 				lostcancel = true,
@@ -74,25 +66,12 @@ return {
 				unusedresult = true,
 				waitgroup = true,
 				yield = true,
-				unusedvariable = true
+				unusedvariable = true,
 			},
 			usePlaceholders = false,
-			completeUnimported = true,
 			staticcheck = true,
 			directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
 			semanticTokens = true,
 		},
 	},
-	capabilities = vim.tbl_deep_extend(
-		"force",
-		{},
-		vim.lsp.protocol.make_client_capabilities(),
-		blink.get_lsp_capabilities(),
-		{
-			fileOperations = {
-				didRename = true,
-				willRename = true,
-			},
-		}
-	),
 }
